@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Trigger Deployment in DigitalOcean
         run: bash .github/scripts/deploy_to_do.sh
         env:
@@ -22,3 +22,4 @@ jobs:
           DIGITAL_OCEAN_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DEPLOYMENT_ID: ${{ env.DEPLOYMENT_ID }}
