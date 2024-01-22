@@ -1,0 +1,63 @@
+name: DEV CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - DEV
+  pull_request:
+    branches:
+      - DEV
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install dependencies
+        run: npm install
+        
+      # - name: Run linters
+      #   run: npm run lint
+        
+      # - name: Run tests
+      #   run: npm test
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Notify Telegram about Build Success
+        if: success()
+        run: bash .github/scripts/notify_telegram_success.sh "DEV build successful. Proceeding to deploy."
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MESSAGE: "DEV build successful. Proceeding to deploy."
+
+      - name: Notify Telegram about Build Failure
+        if: failure() 
+        run: bash .github/scripts/notify_telegram_failure.sh
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MESSAGE: "DEV build or tests failed. Check the logs for details."
+
+  deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Trigger Deployment in DigitalOcean
+        run: bash .github/scripts/deploy_to_do.sh
+        env:
+          DIGITAL_OCEAN_APP_ID: ${{ secrets.DO_APP_ID }}
+          DIGITAL_OCEAN_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
+
+      - name: Check Deployment Status in DigitalOcean
+        run: bash .github/scripts/check_deployment_status.sh
+        env:
+          DIGITAL_OCEAN_APP_ID: ${{ secrets.DO_APP_ID }}
+          DIGITAL_OCEAN_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
