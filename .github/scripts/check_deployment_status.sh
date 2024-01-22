@@ -41,7 +41,7 @@ deployment_id="${DEPLOYMENT_ID}"
 check_deployment_status() {
   curl -s -X GET "https://api.digitalocean.com/v2/apps/${digital_ocean_app_id}/deployments/${deployment_id}" \
     -H "Authorization: Bearer ${digital_ocean_api_token}" \
-    -H "Content-Type: application/json" | jq -r '.deployment.progress'
+    -H "Content-Type: application/json" | jq -r '.deployment.phase'
 }
 
 # check_deployment_status() {
