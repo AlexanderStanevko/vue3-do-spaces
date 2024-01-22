@@ -35,4 +35,4 @@ done
 
 curl -s -X POST "https://api.telegram.org/bot${telegram_bot_token}/sendMessage" \
      -d chat_id="${telegram_chat_id}" \
-     -d text="Deployment successful. Check details: ${digital_ocean_url}"
+     -d text="Deployment (ID: ${deployment_id}) successful. Check details: ${digital_ocean_url}"
