@@ -33,6 +33,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MESSAGE: "DEV build successful. Proceeding to deploy."
+          GITHUB_REF: ${{ github.ref }}
 
       - name: Notify Telegram about Build Failure
         if: failure() 
