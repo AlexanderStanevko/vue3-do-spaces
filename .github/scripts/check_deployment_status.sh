@@ -59,6 +59,7 @@ while [[ "$deployment_phase" != "ACTIVE" ]]; do
   fi
   sleep 10
   deployment_phase=$(check_deployment_status)
+  echo "Current deployment phase222222222: $deployment_phase"
 done
 
 curl -s -X POST "https://api.telegram.org/bot${telegram_bot_token}/sendMessage" \
