@@ -36,15 +36,24 @@ digital_ocean_api_token="${DIGITAL_OCEAN_API_TOKEN}"
 telegram_bot_token="${TELEGRAM_BOT_TOKEN}"
 telegram_chat_id="${TELEGRAM_CHAT_ID}"
 digital_ocean_url="https://cloud.digitalocean.com/apps/${digital_ocean_app_id}"
+deployment_id="${DEPLOYMENT_ID}"
 
 check_deployment_status() {
-  curl -s -X GET "https://api.digitalocean.com/v2/apps/${digital_ocean_app_id}/deployments" \
+  curl -s -X GET "https://api.digitalocean.com/v2/apps/${digital_ocean_app_id}/deployments/${deployment_id}" \
     -H "Authorization: Bearer ${digital_ocean_api_token}" \
-    -H "Content-Type: application/json" | jq -r '.deployments[0].phase'
+    -H "Content-Type: application/json" | jq -r '.deployment.progress'
 }
 
+# check_deployment_status() {
+#   curl -s -X GET "https://api.digitalocean.com/v2/apps/${digital_ocean_app_id}/deployments" \
+#     -H "Authorization: Bearer ${digital_ocean_api_token}" \
+#     -H "Content-Type: application/json" | jq -r '.deployments[0].phase'
+# }
+
+echo "Current deployment IDDDDDDDD: $deployment_id"
+
 deployment_phase=$(check_deployment_status)
-while [[ "$deployment_phase" != "ACTIVE" ]]; do
+while [[ "$deployment_phase" != "SUCCESS" ]]; do
   echo "Current deployment phase: $deployment_phase"
   if [[ "$deployment_phase" == "ERROR" ]]; then
     curl -s -X POST "https://api.telegram.org/bot${telegram_bot_token}/sendMessage" \

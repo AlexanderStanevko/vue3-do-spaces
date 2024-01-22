@@ -61,3 +61,4 @@ jobs:
           DIGITAL_OCEAN_API_TOKEN: ${{ secrets.DO_API_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DEPLOYMENT_ID: ${{ env.DEPLOYMENT_ID }}
